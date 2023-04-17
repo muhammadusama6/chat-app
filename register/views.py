@@ -46,3 +46,12 @@ class LoginAPI(KnoxLoginView):
 class UserListAPIView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    def get_queryset(self):
+        # Get the currently logged-in user
+        current_user = self.request.user
+
+        # Exclude the current user from the queryset
+        queryset = User.objects.exclude(pk=current_user.pk)
+
+        return queryset
