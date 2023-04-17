@@ -23,6 +23,9 @@ class RegisterAPI(generics.GenericAPIView):
         })
 
 
+from rest_framework.response import Response
+
+
 class LoginAPI(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
 
@@ -31,7 +34,13 @@ class LoginAPI(KnoxLoginView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         login(request, user)
-        return super(LoginAPI, self).post(request, format=None)
+        user_id = user.id
+        response = super(LoginAPI, self).post(request, format=None)
+        data = {
+            'id': user_id,
+            **response.data
+        }
+        return Response(data)
 
 
 class UserListAPIView(generics.ListAPIView):
